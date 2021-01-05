@@ -44,7 +44,7 @@ function handleGetMovies(req,res){
     }else{
       avg_vote = Number(avg_vote);
     }
-    results = results.filter(movie => movie.avg_vote >= avg_vote)
+    results = results.filter(movie => Number(movie.avg_vote) >= avg_vote)
   }
 
   if (results.length === 0){
