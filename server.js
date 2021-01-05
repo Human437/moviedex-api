@@ -24,6 +24,38 @@ function validateBearerToken(req,res,next){
 
 app.use(validateBearerToken)
 
+function handleGetMovies(req,res){
+  let {genre, country, avg_vote} = req.query;
+  let results = MOVIES;
+
+  if(genre){
+    genre = genre.toLowerCase();
+    results = results.filter(movie => movie.genre.toLowerCase().includes(genre))
+  }
+
+  if(country){
+    country = country.toLowerCase();
+    results = results.filter(movie => movie.country.toLowerCase().includes(country))
+  }
+
+  if(avg_vote){
+    if(isNaN(Number(avg_vote))){
+      return res.status(400).send('Invalid avg_vote provided')
+    }else{
+      avg_vote = Number(avg_vote);
+    }
+    results = results.filter(movie => movie.avg_vote >= avg_vote)
+  }
+
+  if (results.length === 0){
+    res.send('No movies match the specified parameters')
+  }else{
+    res.json(results)
+  }
+}
+
+app.get('/movie', handleGetMovies)
+
 const PORT = 8000
 
 app.listen(PORT, () => {
